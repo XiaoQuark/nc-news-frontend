@@ -1,8 +1,10 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
 import { ArticleCard } from "./ArticleCard";
+import "./App.css";
 
 export function Articles({ topic, articleList, setArticleList }) {
+    const [isLoading, setIsLoading] = useState(true);
     useEffect(() => {
         axios
             .get("https://xqnews.onrender.com/api/articles", {
@@ -10,11 +12,14 @@ export function Articles({ topic, articleList, setArticleList }) {
             })
             .then((response) => {
                 setArticleList(response.data.articles);
+                setIsLoading(false);
             });
     }, [topic]);
+
+    if (isLoading) return <p className='loading-msg'>Page is Loading...</p>;
     return (
-        <>
-            <div className='title-container'>
+        <section className='content-wrapper'>
+            <div className='title-wrapper'>
                 <h2>Feed</h2>
             </div>
             <ul>
@@ -27,6 +32,6 @@ export function Articles({ topic, articleList, setArticleList }) {
                     );
                 })}
             </ul>
-        </>
+        </section>
     );
 }
