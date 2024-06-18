@@ -49,7 +49,6 @@ function Articles({ topic, articleList, setArticleList }) {
                 params: { topic: topic },
             })
             .then((response) => {
-                console.log(response.data.articles[0]);
                 setArticleList(response.data.articles);
             });
     }, [topic]);
@@ -78,20 +77,24 @@ function ArticleCard({ article }) {
             to={`/articles/${article.article_id}`}
             aria-label={`navigate to ${article.title}`}
         >
-            <li className='articles-card'>
+            <li className='article-card'>
+                <p className='article-card-topic'>{article.topic}</p>
                 <h3 className='article-card-title'>{article.title}</h3>
-                <p className='article-card-date'>{article.created_at}</p>
+                <div className='card-user-date'>
+                    <p className='article-card-username'>{article.author}</p>
+                    <p className='article-card-date'>{article.created_at}</p>
+                </div>
                 <img
                     className='article-card-img'
                     src={article.article_img_url}
                     alt=''
                 />
-                <p className='article-card-username'>{article.author}</p>
-                <p className='article-card-topic'>{article.topic}</p>
-                <p className='article-card-comment-count'>
-                    {article.comment_count}
-                </p>
-                <p className='article-card-votes'>{article.votes}</p>
+                <div className='card-comments-votes'>
+                    <p className='article-card-comment-count'>
+                        comments {article.comment_count}
+                    </p>
+                    <p className='article-card-votes'>votes {article.votes}</p>
+                </div>
             </li>
         </Link>
     );
