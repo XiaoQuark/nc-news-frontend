@@ -3,13 +3,14 @@ import axios from "axios";
 import { Link } from "react-router-dom";
 export function Header({ setArticleList, setTopic, topic }) {
     useEffect(() => {
+        console.log("useEffect is here");
         axios.get("https://xqnews.onrender.com/api/topics").then((response) => {
             console.log(response.data.topics);
         });
     }, []);
     return (
         <header>
-            <Link>
+            <Link to='/'>
                 <h1>XQ News</h1>
             </Link>
             <SearchBar
