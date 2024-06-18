@@ -7,7 +7,6 @@ import { ArticleContent } from "./ArticleContent";
 
 function App() {
     const [articleList, setArticleList] = useState([]);
-    const [topicList, setTopicList] = useState([]);
     const [topic, setTopic] = useState({});
 
     return (
@@ -17,7 +16,7 @@ function App() {
                 setTopic={setTopic}
                 topic={topic}
             />
-            <section>
+            <main className='main-wrapper'>
                 <Routes>
                     <Route
                         path='/'
@@ -34,9 +33,9 @@ function App() {
                         element={<ArticleContent />}
                     />
                     {/* <Route path='/user' element={<User />}/>
-                  <Route path='/post-article' element='' /> */}
+                    <Route path='/post-article' element='' /> */}
                 </Routes>
-            </section>
+            </main>
             {/* <Footer setTopic={setTopic} topic={topic} /> */}
         </>
     );
