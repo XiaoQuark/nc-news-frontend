@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { ArticleCard } from "./ArticleCard";
 import "./App.css";
+import { useParams } from "react-router-dom";
 
 export function Articles({ topic, articleList, setArticleList }) {
     const [isLoading, setIsLoading] = useState(true);

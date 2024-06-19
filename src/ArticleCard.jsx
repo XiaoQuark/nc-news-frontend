@@ -25,7 +25,10 @@ export function ArticleCard({ article }) {
                     <p className='card-comment-count'>
                         comments {article.comment_count}
                     </p>
-                    <p className='card-votes'>votes {article.votes}</p>
+                    <p className='card-votes'>
+                        votes{" "}
+                        <span className='points-num'>{article.votes}</span>
+                    </p>
                 </div>
             </li>
         </Link>
