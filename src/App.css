@@ -127,3 +127,7 @@ li {
     width: 100%;
     max-width: 1200px;
 }
+
+.points-num {
+    padding-left: 1rem;
+}
