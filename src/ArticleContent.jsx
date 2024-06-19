@@ -1,7 +1,8 @@
-import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useContext, useEffect, useState } from "react";
+import { useParams, Link, useLocation } from "react-router-dom";
 import axios from "axios";
 import { Comments } from "./Comments";
+import { UserContext } from "./UserContext";
 import "./App.css";
 
 export function ArticleContent() {
@@ -11,6 +12,24 @@ export function ArticleContent() {
     const [commentList, setCommentList] = useState([]);
     const [articlePoints, setArticlePoints] = useState(null);
     const [error, setError] = useState(null);
+    const [commentFeedback, setCommentFeedback] = useState("");
+    const [isPostingComment, setIsPostingComment] = useState(false);
+    const { user } = useContext(UserContext);
+    const location = useLocation();
+
+    useEffect(() => {
+        axios
+            .get(`https://xqnews.onrender.com/api/articles/${article_id}`)
+            .then((response) => {
+                setArticleContent(response.data.article);
+                setArticlePoints(response.data.article.votes);
+                setIsLoading(false);
+            })
+            .catch((error) => {
+                setError("There was an error fetching the article content!");
+                setIsLoading(false);
+            });
+    }, [article_id]);
 
     const handleDecrease = (event) => {
         axios
@@ -38,19 +57,32 @@ export function ArticleContent() {
             });
     };
 
-    useEffect(() => {
+    const handleCommentSubmit = (event) => {
+        event.preventDefault();
+        const commentBody = event.target.elements.comment.value;
+
+        setIsPostingComment(true);
         axios
-            .get(`https://xqnews.onrender.com/api/articles/${article_id}`)
+            .post(
+                `https://xqnews.onrender.com/api/articles/${article_id}/comments`,
+                {
+                    username: user.username,
+                    body: commentBody,
+                }
+            )
             .then((response) => {
-                setArticleContent(response.data.article);
-                setArticlePoints(response.data.article.votes);
-                setIsLoading(false);
+                setCommentList([response.data.comment, ...commentList]);
+                event.target.reset();
+                setCommentFeedback("Your comment has been posted!");
             })
             .catch((error) => {
-                setError("There was an error fetching the article content!");
-                setIsLoading(false);
+                setError("There was an error posting the comment.");
+                setCommentFeedback("");
+            })
+            .finally(() => {
+                setIsPostingComment(false);
             });
-    }, [article_id]);
+    };
 
     if (isLoading) return <p className='loading-msg'>Page is Loading...</p>;
 
@@ -74,7 +106,6 @@ export function ArticleContent() {
                 />
                 <div className='article-comments-votes'>
                     <a>Comments {articleContent.comment_count}</a>
-
                     <div className='points-wrapper'>
                         <p>
                             Points
@@ -95,6 +126,28 @@ export function ArticleContent() {
                     </div>
                 </div>
             </article>
+            {user ? (
+                <form onSubmit={handleCommentSubmit}>
+                    <textarea
+                        name='comment'
+                        placeholder='Write your comment...'
+                        id=''
+                        required
+                    ></textarea>
+                    <button type='submit' disabled={isPostingComment}>
+                        {isPostingComment ? "Posting..." : "Post Comment"}
+                    </button>
+                    {commentFeedback && (
+                        <p className='feedback-msg'>{commentFeedback}</p>
+                    )}
+                </form>
+            ) : (
+                <p>
+                    <Link to='/login' state={{ from: location }}>
+                        Login to leave your comment!
+                    </Link>
+                </p>
+            )}
             <Comments
                 article_id={article_id}
                 commentList={commentList}
