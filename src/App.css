@@ -131,3 +131,8 @@ li {
 .points-num {
     padding-left: 1rem;
 }
+
+#post-comment {
+    display: flex;
+    flex-direction: column;
+}
