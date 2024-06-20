@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { ArticleCard } from "./ArticleCard";
-import "./App.css";
+import "../App.css";
 import { useParams } from "react-router-dom";
+import { CardWrapper } from "./CardWrapper";
 
 export function Articles({ topic, articleList, setArticleList }) {
     const [isLoading, setIsLoading] = useState(true);
@@ -26,10 +27,9 @@ export function Articles({ topic, articleList, setArticleList }) {
             <ul>
                 {articleList.map((article) => {
                     return (
-                        <ArticleCard
-                            key={article.article_id}
-                            article={article}
-                        />
+                        <CardWrapper key={article.article_id}>
+                            <ArticleCard article={article} />
+                        </CardWrapper>
                     );
                 })}
             </ul>

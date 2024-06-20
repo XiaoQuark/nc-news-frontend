@@ -1,16 +1,15 @@
 import { useState } from "react";
 import "./App.css";
 import { Route, Routes, Link } from "react-router-dom";
-import { Header } from "./Header";
-import { Articles } from "./Articles";
-import { ArticleContent } from "./ArticleContent";
-import { UserProvider } from "./UserContext";
-import { LoginPage } from "./LoginPage";
-import { UserPage } from "./UserPage";
+import { Header } from "./components/Header";
+import { Articles } from "./components/Articles";
+import { ArticleContent } from "./components/ArticleContent";
+import { UserProvider } from "./components/UserContext";
+import { LoginPage } from "./components/LoginPage";
+import { UserPage } from "./components/UserPage";
 
 function App() {
     const [articleList, setArticleList] = useState([]);
-
     const [topic, setTopic] = useState({});
 
     return (
@@ -33,12 +32,20 @@ function App() {
                             />
                         }
                     />
-
+                    <Route
+                        path='/:topic'
+                        element={
+                            <Articles
+                                articleList={articleList}
+                                setArticleList={setArticleList}
+                                topic={topic}
+                            />
+                        }
+                    />
                     <Route
                         path='/articles/:article_id'
                         element={<ArticleContent />}
                     />
-
                     <Route path='/login' element={<LoginPage />} />
 
                     <Route path='/user' element={<UserPage />} />

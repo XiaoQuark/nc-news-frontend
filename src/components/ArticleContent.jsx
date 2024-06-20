@@ -3,7 +3,7 @@ import { useParams, Link, useLocation } from "react-router-dom";
 import axios from "axios";
 import { Comments } from "./Comments";
 import { UserContext } from "./UserContext";
-import "./App.css";
+import "../App.css";
 
 export function ArticleContent() {
     const { article_id } = useParams();
