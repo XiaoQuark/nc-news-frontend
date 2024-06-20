@@ -1,0 +1,13 @@
+.results-list {
+    background-color: #555;
+    width: 20rem;
+    display: flex;
+    flex-direction: column;
+    border: solid 1px black;
+    margin-top: 1rem;
+    max-height: 200px;
+    overflow-y: scroll;
+    position: absolute;
+    top: 2.5rem;
+    z-index: 3;
+}

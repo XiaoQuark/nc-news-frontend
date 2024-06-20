@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { CommentCard } from "./CommentCard";
+import { CardWrapper } from "./CardWrapper";
 
 export function Comments({ article_id, commentList, setCommentList }) {
     const [isLoading, setIsLoading] = useState(true);
@@ -37,10 +38,9 @@ export function Comments({ article_id, commentList, setCommentList }) {
             <ul>
                 {commentList.map((comment) => {
                     return (
-                        <CommentCard
-                            comment={comment}
-                            key={comment.comment_id}
-                        />
+                        <CardWrapper key={comment.comment_id}>
+                            <CommentCard comment={comment} />
+                        </CardWrapper>
                     );
                 })}
             </ul>
