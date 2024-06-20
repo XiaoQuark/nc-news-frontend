@@ -4,7 +4,6 @@ import { Link } from "react-router-dom";
 
 export function UserPage() {
     const { user, setUser } = useContext(UserContext);
-    const [isLoading, setIsLoading] = useState(true);
 
     const handleLogout = () => {
         setUser(null);
