@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState } from "react";
-import { useParams, Link, useLocation } from "react-router-dom";
+import { useParams, Link, useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { Comments } from "./Comments";
 import { UserContext } from "./UserContext";
@@ -16,6 +16,7 @@ export function ArticleContent() {
     const [isPostingComment, setIsPostingComment] = useState(false);
     const { user } = useContext(UserContext);
     const location = useLocation();
+    const navigate = useNavigate();
 
     useEffect(() => {
         axios
@@ -26,10 +27,19 @@ export function ArticleContent() {
                 setIsLoading(false);
             })
             .catch((error) => {
-                setError("There was an error fetching the article content!");
+                console.log(error.response.data.msg);
+                if (error.response && error.response.status === 404) {
+                    navigate("/not-found", {
+                        state: { message: error.response.data.msg },
+                    });
+                } else {
+                    setError(
+                        "There was an error fetching the article content!"
+                    );
+                }
                 setIsLoading(false);
             });
-    }, [article_id]);
+    }, [article_id, navigate]);
 
     const handleDecrease = (event) => {
         axios
@@ -74,23 +84,24 @@ export function ArticleContent() {
                 setCommentList([response.data.comment, ...commentList]);
                 event.target.reset();
                 setCommentFeedback("Your comment has been posted!");
+                setIsPostingComment(false);
+                setError(null);
             })
             .catch((error) => {
                 setError("There was an error posting the comment.");
                 setCommentFeedback("");
-            })
-            .finally(() => {
                 setIsPostingComment(false);
             });
     };
 
     if (isLoading) return <p className='loading-msg'>Page is Loading...</p>;
+    if (error) return <p className='error-msg'>{error}</p>;
 
     return (
         <>
-            {error && <p className='error-msg'>{error}</p>}
+            {/* {error && <p className='error-msg'>{error}</p>} */}
             <article className='content-wrapper'>
-                <div className='title-wrapper'>
+                <div className='heading-wrapper'>
                     <h2>{articleContent.title}</h2>
                 </div>
                 <div className='article-meta-data'>
