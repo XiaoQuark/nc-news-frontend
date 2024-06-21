@@ -8,8 +8,7 @@ export function CommentCard({ comment }) {
     const [error, setError] = useState(null);
     const { user } = useContext(UserContext);
     const [isDeletingComment, setIsDeletingComment] = useState(false);
-    const username = user.username;
-    console.log(comment.comment_id);
+    const username = user?.username || null;
 
     const handleDelete = () => {
         setIsDeletingComment(true);
@@ -18,7 +17,6 @@ export function CommentCard({ comment }) {
                 `https://xqnews.onrender.com/api/comments/${comment.comment_id}`
             )
             .then((response) => {
-                console.log("Delete response:", response);
                 setDeleteMsg("The comment was deleted");
             })
             .catch((error) => {
