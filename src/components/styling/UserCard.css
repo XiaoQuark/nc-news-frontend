@@ -1,0 +1,17 @@
+.user-wrapper {
+    padding: 2rem;
+    max-width: 500px;
+}
+
+.user-wrapper img {
+    width: 15rem;
+    height: 15rem;
+    object-fit: cover;
+    background-color: white;
+    border-radius: 50%;
+}
+
+.user-wrapper p {
+    font-weight: bold;
+    font-size: 2rem;
+}

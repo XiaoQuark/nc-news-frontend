@@ -2,6 +2,10 @@ import { useContext, useEffect, useState } from "react";
 import { UserContext } from "./UserContext";
 import axios from "axios";
 import { useLocation, useNavigate } from "react-router-dom";
+import { PageTitleWrapper } from "./PageTitleWrapper";
+import { CardWrapper } from "./CardWrapper";
+import "./styling/UserCard.css";
+import ContentWrapper from "./ContentWrapper";
 
 export function LoginPage() {
     const [userList, setUserList] = useState([]);
@@ -31,16 +35,18 @@ export function LoginPage() {
     return (
         <section>
             {error && <p className='error-msg'>{error}</p>}
-            <h2>Select your account</h2>
-            <ul className='user-list'>
-                {userList.map((user) => (
-                    <UserCard
-                        key={user.username}
-                        user={user}
-                        onLogin={handleLogin}
-                    />
-                ))}
-            </ul>
+            <PageTitleWrapper>
+                <h2>Select your account</h2>
+            </PageTitleWrapper>
+            <ContentWrapper>
+                <ul className='list-wrapper'>
+                    {userList.map((user) => (
+                        <CardWrapper key={user.username}>
+                            <UserCard user={user} onLogin={handleLogin} />
+                        </CardWrapper>
+                    ))}
+                </ul>
+            </ContentWrapper>
         </section>
     );
 }
@@ -48,7 +54,7 @@ export function LoginPage() {
 function UserCard({ user, onLogin }) {
     return (
         <div onClick={() => onLogin(user)}>
-            <li>
+            <li className='user-wrapper'>
                 <img className='avatar' src={user.avatar_url} alt='' />
                 <p>{user.username}</p>
             </li>

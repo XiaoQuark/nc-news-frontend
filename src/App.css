@@ -1,34 +1,11 @@
 #root {
-    /* width: 100vw; */
-    margin: 0;
-    box-sizing: border-box;
     display: flex;
     flex-direction: column;
     justify-content: center;
 }
 
-Header {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-evenly;
-    align-items: center;
-    position: fixed;
-    top: 0;
-    left: 0;
-    border: solid 1px white;
-    width: 100vw;
-    background-color: #242424;
-}
-
-.user-avatar {
-    width: 50px;
-    height: 50px;
-    background-color: #646cff;
-    border-radius: 50%;
-}
-
-.user-avatar:hover {
-    color: #535bf2;
+p {
+    color: #abd1c6;
 }
 
 .loading-msg {
@@ -39,7 +16,6 @@ Header {
 .heading-wrapper {
     border: solid 3px white;
     padding: 0 2rem;
-    margin-top: 10rem;
     width: 100%;
     box-sizing: border-box;
     display: flex;
@@ -52,13 +28,8 @@ Header {
     flex-direction: column;
     justify-content: center;
     width: 100vw;
-    padding: 0 5%;
-    box-sizing: border-box;
-}
-
-.content-wrapper {
-    max-width: 1280px;
-    margin: 0 auto;
+    margin-top: 5rem;
+    padding: 3rem 5% 0 5%;
     box-sizing: border-box;
 }
 
@@ -116,9 +87,6 @@ ul {
 
 .vote-btn {
     margin: 0 0.5em;
-    font-weight: bold;
-    width: 50px;
-    height: 50px;
 }
 
 .article-img {
@@ -157,4 +125,15 @@ ul {
 
 .filter-option:hover {
     text-decoration: underline;
+}
+
+.comment-wrapper {
+    padding: 2rem;
+}
+
+.list-wrapper {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-around;
 }

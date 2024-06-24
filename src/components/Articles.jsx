@@ -7,6 +7,8 @@ import { CardWrapper } from "./CardWrapper";
 import { FaSort } from "react-icons/fa";
 import { CgOptions } from "react-icons/cg";
 import { FilterList } from "./FilterList";
+import { PageTitleWrapper } from "./PageTitleWrapper";
+import ContentWrapper from "./ContentWrapper";
 
 export function Articles({ articleList, setArticleList }) {
     const { topic } = useParams();
@@ -47,8 +49,8 @@ export function Articles({ articleList, setArticleList }) {
     if (error) return <p className='error-msg'>{error}</p>;
 
     return (
-        <section className='content-wrapper'>
-            <div className='heading-wrapper'>
+        <section>
+            <PageTitleWrapper>
                 <h2>Feed</h2>
                 <div className='tools'>
                     <FilterList
@@ -65,16 +67,18 @@ export function Articles({ articleList, setArticleList }) {
                     />
                     <FaSort onClick={handleOrderToggle} />
                 </div>
-            </div>
-            <ul>
-                {articleList.map((article) => {
-                    return (
-                        <CardWrapper key={article.article_id}>
-                            <ArticleCard article={article} />
-                        </CardWrapper>
-                    );
-                })}
-            </ul>
+            </PageTitleWrapper>
+            <ContentWrapper>
+                <ul className='list-wrapper'>
+                    {articleList.map((article) => {
+                        return (
+                            <CardWrapper key={article.article_id}>
+                                <ArticleCard article={article} />
+                            </CardWrapper>
+                        );
+                    })}
+                </ul>
+            </ContentWrapper>
         </section>
     );
 }

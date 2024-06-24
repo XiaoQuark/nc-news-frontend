@@ -27,7 +27,7 @@ export function CommentCard({ comment }) {
             });
     };
     return (
-        <li>
+        <li className='comment-wrapper'>
             {deleteMsg.length === 0 ? (
                 <>
                     {username === comment.author ? (

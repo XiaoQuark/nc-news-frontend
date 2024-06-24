@@ -1,5 +1,22 @@
 .card-wrapper {
-    border: solid 2px white;
+    /* border: solid 2px white; */
     border-radius: 20px;
     margin: 2rem 0;
+    background-color: #abd1c6;
+    color: #0f3433;
+    max-width: 500px;
+    box-shadow: 0 10px 0 hsla(0, 0%, 0%, 0.5);
+}
+
+.card-wrapper a {
+    color: #0f3433;
+    font-size: ;
+}
+
+.card-wrapper span {
+    color: #0f3433;
+}
+
+.card-wrapper p {
+    color: #0f3433;
 }
