@@ -18,8 +18,8 @@ export function LoginPage() {
 
 	useEffect(() => {
 		getUsers()
-			.then((response) => {
-				setUserList(response.data.users);
+			.then(({ users }) => {
+				setUserList(users);
 			})
 			.catch((error) => {
 				setError("There was an error fetching the users!");

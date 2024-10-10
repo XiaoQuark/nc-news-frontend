@@ -1,36 +1,79 @@
 import { Link } from "react-router-dom";
+import {
+	Box,
+	Text,
+	Image,
+	Card,
+	CardBody,
+	CardFooter,
+	Heading,
+	Tooltip,
+	Flex,
+	Skeleton,
+} from "@chakra-ui/react";
 
-export function ArticleCard({ article }) {
-    return (
-        <Link
-            to={`/articles/${article.article_id}`}
-            aria-label={`navigate to ${article.title}`}
-        >
-            <li className='article-card'>
-                <div className='card-title-topic'>
-                    <p className='card-topic'>{article.topic}</p>
-                    <h3 className='card-title'>{article.title}</h3>
-                    <div className='card-meta-data'>
-                        <p className='card-username'>{article.author}</p>
-                        <p className='card-date'>{article.created_at}</p>
-                    </div>
-                </div>
-
-                <img
-                    className='card-img'
-                    src={article.article_img_url}
-                    alt=''
-                />
-                <div className='card-comments-votes'>
-                    <p className='card-comment-count'>
-                        comments {article.comment_count}
-                    </p>
-                    <p className='card-votes'>
-                        votes{" "}
-                        <span className='points-num'>{article.votes}</span>
-                    </p>
-                </div>
-            </li>
-        </Link>
-    );
+export function ArticleCard({ article, isLoading }) {
+	return (
+		<Skeleton isLoaded={!isLoading} borderRadius="lg">
+			<Link
+				to={`/articles/${article.article_id}`}
+				aria-label={`navigate to ${article.title}`}
+			>
+				<Card
+					as="li"
+					borderWidth="1px"
+					borderRadius="lg"
+					overflow="hidden"
+					m={4}
+					height={{ base: "auto", md: "400px", lg: "450px" }} // Responsive height
+				>
+					<CardBody
+						display="flex"
+						flexDirection="column"
+						justifyContent="space-between"
+					>
+						<Flex direction="column" flexGrow={1}>
+							<Text fontSize="sm" color="gray.500" mb={2}>
+								{article.topic}
+							</Text>
+							<Heading as="h3" size="md" noOfLines={2} mb={4}>
+								{article.title}
+							</Heading>
+							{/* <Tooltip label={article.title} hasArrow>
+							</Tooltip> */}
+							<Box
+								display="flex"
+								justifyContent="space-between"
+								fontSize="sm"
+								color="gray.500"
+								mt="auto"
+							>
+								<Text>{article.author}</Text>
+								<Text>
+									{new Date(
+										article.created_at
+									).toLocaleDateString()}
+								</Text>
+							</Box>
+						</Flex>
+						<Image
+							src={article.article_img_url}
+							alt={article.title}
+							mb={4}
+							mt={4}
+							borderRadius="lg"
+						/>
+					</CardBody>
+					<CardFooter display="flex" justifyContent="space-between">
+						<Text fontSize="sm">
+							comments {article.comment_count}
+						</Text>
+						<Text fontSize="sm">
+							votes <span>{article.votes}</span>
+						</Text>
+					</CardFooter>
+				</Card>
+			</Link>
+		</Skeleton>
+	);
 }

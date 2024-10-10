@@ -1,14 +1,20 @@
 import { useEffect, useState } from "react";
-import { ArticleCard } from "./ArticleCard";
-import "../App.css";
 import { useSearchParams, useNavigate, useParams } from "react-router-dom";
-import { CardWrapper } from "./CardWrapper";
 import { FaSort } from "react-icons/fa";
 import { CgOptions } from "react-icons/cg";
 import { FilterList } from "./FilterList";
-import { PageTitleWrapper } from "./PageTitleWrapper";
-import ContentWrapper from "./ContentWrapper";
+import { ArticleCard } from "./ArticleCard";
 import { getArticles } from "../../utils/api";
+import {
+	Box,
+	SimpleGrid,
+	Spinner,
+	Text,
+	Flex,
+	Skeleton,
+	SkeletonText,
+	Container,
+} from "@chakra-ui/react";
 
 export function Articles({ articleList, setArticleList }) {
 	const { topic } = useParams();
@@ -43,14 +49,25 @@ export function Articles({ articleList, setArticleList }) {
 		setSearchParams({ sort_by: sortBy, order: newOrder });
 	};
 
-	if (isLoading) return <p className="loading-msg">Page is Loading...</p>;
-	if (error) return <p className="error-msg">{error}</p>;
+	// if (isLoading) return <Spinner size="xl" color="teal.500" />;
+	if (error) return <Text color="red.500">{error}</Text>;
 
 	return (
-		<section>
-			<PageTitleWrapper>
-				<h2>Feed</h2>
-				<div className="tools">
+		<Container as="main" maxWidth="container.xl">
+			<Flex
+				as="header"
+				border="3px solid white"
+				px={{ base: 4, md: 8, lg: 16 }}
+				width="100%"
+				boxSizing="border-box"
+				justifyContent="space-between"
+				alignItems="center"
+				mt={{ base: "130px", md: "180px" }}
+			>
+				<Text as="h2" fontSize="2xl" fontWeight="bold">
+					Feed
+				</Text>
+				<Box className="tools" display="flex" alignItems="center">
 					<FilterList
 						setSearchParams={setSearchParams}
 						sortBy={sortBy}
@@ -64,19 +81,33 @@ export function Articles({ articleList, setArticleList }) {
 						}
 					/>
 					<FaSort onClick={handleOrderToggle} />
-				</div>
-			</PageTitleWrapper>
-			<ContentWrapper>
-				<ul className="list-wrapper">
-					{articleList.map((article) => {
-						return (
-							<CardWrapper key={article.article_id}>
-								<ArticleCard article={article} />
-							</CardWrapper>
-						);
-					})}
-				</ul>
-			</ContentWrapper>
-		</section>
+				</Box>
+			</Flex>
+			<Box mx="auto" px={{ base: 4, md: 8, lg: 16 }}>
+				<SimpleGrid
+					// columns={{ base: 1, sm: 1, md: 2, lg: 2 }}
+					column={3}
+					spacing={8}
+					minChildWidth={"300px"}
+				>
+					{articleList.map((article) => (
+						<ArticleCard
+							key={article.article_id}
+							article={article}
+							isLoading={isLoading}
+						/>
+					))}
+				</SimpleGrid>
+				{/* <Flex flexWrap={"wrap"}>
+					{articleList.map((article) => (
+						<ArticleCard
+							key={article.article_id}
+							article={article}
+							isLoading={isLoading}
+						/>
+					))}
+				</Flex> */}
+			</Box>
+		</Container>
 	);
 }

@@ -2,11 +2,23 @@ import { useContext, useEffect, useState } from "react";
 import { useParams, Link, useLocation, useNavigate } from "react-router-dom";
 import { Comments } from "./Comments";
 import { UserContext } from "./UserContext";
-import "../App.css";
+import {
+	Box,
+	Flex,
+	Text,
+	Image,
+	Heading,
+	Avatar,
+	Container,
+	Tooltip,
+	VStack,
+	Button,
+} from "@chakra-ui/react";
 import {
 	getArticleById,
 	patchArticleById,
 	postCommentByArticleId,
+	getUsers,
 } from "../../utils/api";
 
 export function ArticleContent() {
@@ -18,6 +30,7 @@ export function ArticleContent() {
 	const [error, setError] = useState(null);
 	const [commentFeedback, setCommentFeedback] = useState("");
 	const [isPostingComment, setIsPostingComment] = useState(false);
+	const [authorAvatarUrl, setAuthorAvatarUrl] = useState("");
 	const { user } = useContext(UserContext);
 	const location = useLocation();
 	const navigate = useNavigate();
@@ -29,6 +42,17 @@ export function ArticleContent() {
 				setArticleContent(article);
 				setArticlePoints(article.votes);
 				setIsLoading(false);
+				return article.author;
+			})
+			.then((author) => {
+				return getUsers().then(({ users }) => {
+					const authorData = users.find(
+						(user) => user.username === author
+					);
+					if (authorData) {
+						setAuthorAvatarUrl(authorData.avatar_url);
+					}
+				});
 			})
 			.catch((error) => {
 				if (error.response && error.response.status === 404) {
@@ -64,7 +88,6 @@ export function ArticleContent() {
 
 		setIsPostingComment(true);
 
-		axios;
 		postCommentByArticleId(article_id, user.username, commentBody)
 			.then(({ comment }) => {
 				setCommentList([comment, ...commentList]);
@@ -83,73 +106,128 @@ export function ArticleContent() {
 	if (isLoading) return <p className="loading-msg">Page is Loading...</p>;
 	if (error) return <p className="error-msg">{error}</p>;
 
+	const articleBodyArray = articleContent.body
+		? articleContent.body
+				.split(". ")
+				.filter((sentence) => sentence.trim() !== "")
+		: [];
+
 	return (
-		<>
-			{/* {error && <p className='error-msg'>{error}</p>} */}
-			<article className="content-wrapper">
-				<div className="heading-wrapper">
-					<h2>{articleContent.title}</h2>
-				</div>
-				<div className="article-meta-data">
-					<p>{articleContent.topic}</p>
-					<p>{articleContent.author}</p>
-					<p>{articleContent.created_at}</p>
-				</div>
-				<p className="article-body">{articleContent.body}</p>
-				<img
-					className="article-img"
-					src={articleContent.article_img_url}
-					alt=""
-				/>
-				<div className="article-comments-votes">
-					<a>Comments {articleContent.comment_count}</a>
-					<div className="points-wrapper">
-						<p>
-							Points
-							<span className="points-num">{articlePoints}</span>
-						</p>
-						<button
-							onClick={() => handleVote(1)}
-							className="vote-btn vote-increase"
-						>
-							+
-						</button>
-						<button
-							onClick={() => handleVote(-1)}
-							className="vote-btn vote-decrease"
-						>
-							-
-						</button>
+		<Container as="section" maxW={"7xl"} py={{ base: 8, md: 10 }}>
+			<VStack spacing={{ base: 6, md: 8 }} alignItems="start">
+				<Box w="100%">
+					<Flex
+						as="header"
+						border="3px solid white"
+						px={{ base: 4, md: 8, lg: 16 }}
+						width="100%"
+						boxSizing="border-box"
+						justifyContent="space-between"
+						alignItems="center"
+						mb={4}
+					>
+						<Box>
+							<Heading
+								as="h2"
+								fontSize={{ base: "2xl", sm: "3xl", md: "4xl" }}
+								fontWeight="bold"
+							>
+								{articleContent.title}
+							</Heading>
+							<Flex mt={2} alignItems="center">
+								<Text fontSize="md" mr={4}>
+									{articleContent.topic}
+								</Text>
+								<Text fontSize="md" color="gray.500">
+									{new Date(
+										articleContent.created_at
+									).toLocaleString()}
+								</Text>
+							</Flex>
+						</Box>
+						<Tooltip label={articleContent.author} fontSize="md">
+							{authorAvatarUrl.length !== 0 ? (
+								<Avatar size="sm" src={authorAvatarUrl} />
+							) : (
+								<Avatar src="https://bit.ly/broken-link" />
+							)}
+						</Tooltip>
+					</Flex>
+				</Box>
+				<Box w="100%">
+					<Image
+						rounded="md"
+						alt={articleContent.title}
+						src={articleContent.article_img_url}
+						fit="cover"
+						w="100%"
+						h={{ base: "100%", sm: "400px", lg: "500px" }}
+						mb={10}
+					/>
+					<VStack alignItems="start" spacing={4}>
+						{articleBodyArray.map((sentence, index) => (
+							<Text key={index} fontSize="lg">
+								{sentence.trim()}.
+							</Text>
+						))}
+					</VStack>
+				</Box>
+				<Box w="100%" mt={4}>
+					<div className="article-comments-votes">
+						<a>Comments {articleContent.comment_count}</a>
+						<div className="points-wrapper">
+							<p>
+								Points
+								<span className="points-num">
+									{articlePoints}
+								</span>
+							</p>
+							<button
+								onClick={() => handleVote(1)}
+								className="vote-btn vote-increase"
+							>
+								+
+							</button>
+							<button
+								onClick={() => handleVote(-1)}
+								className="vote-btn vote-decrease"
+							>
+								-
+							</button>
+						</div>
 					</div>
-				</div>
-			</article>
-			{user ? (
-				<form onSubmit={handleCommentSubmit}>
-					<textarea
-						name="comment"
-						placeholder="Write your comment..."
-						id=""
-						required
-					></textarea>
-					<button type="submit" disabled={isPostingComment}>
-						{isPostingComment ? "Posting..." : "Post Comment"}
-					</button>
-					{commentFeedback && (
-						<p className="feedback-msg">{commentFeedback}</p>
+				</Box>
+				<Box w="100%">
+					{user ? (
+						<form onSubmit={handleCommentSubmit}>
+							<textarea
+								name="comment"
+								placeholder="Write your comment..."
+								required
+							></textarea>
+							<Button type="submit" disabled={isPostingComment}>
+								{isPostingComment
+									? "Posting..."
+									: "Post Comment"}
+							</Button>
+							{commentFeedback && <Text>{commentFeedback}</Text>}
+						</form>
+					) : (
+						<Text>
+							<Link to="/login" state={{ from: location }}>
+								Login to leave your comment!
+							</Link>
+						</Text>
 					)}
-				</form>
-			) : (
-				<p>
-					<Link to="/login" state={{ from: location }}>
-						Login to leave your comment!
-					</Link>
-				</p>
-			)}
-			<Comments
-				article_id={article_id}
-				commentList={commentList}
-				setCommentList={setCommentList}
-			/>
-		</>
+				</Box>
+				<Box w="100%">
+					<Comments
+						article_id={article_id}
+						commentList={commentList}
+						setCommentList={setCommentList}
+					/>
+				</Box>
+			</VStack>
+		</Container>
 	);
 }
