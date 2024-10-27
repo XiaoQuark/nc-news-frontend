@@ -1,3 +1,4 @@
+import React, { forwardRef } from "react";
 import { Link } from "react-router-dom";
 import {
 	Box,
@@ -12,7 +13,7 @@ import {
 	Skeleton,
 } from "@chakra-ui/react";
 
-export function ArticleCard({ article, isLoading }) {
+export const ArticleCard = forwardRef(({ article, isLoading }, ref) => {
 	return (
 		<Skeleton isLoaded={!isLoading} borderRadius="lg">
 			<Link
@@ -20,6 +21,7 @@ export function ArticleCard({ article, isLoading }) {
 				aria-label={`navigate to ${article.title}`}
 			>
 				<Card
+					ref={ref}
 					as="li"
 					borderWidth="1px"
 					borderRadius="lg"
@@ -76,4 +78,6 @@ export function ArticleCard({ article, isLoading }) {
 			</Link>
 		</Skeleton>
 	);
-}
+});
+
+ArticleCard.displayName = "ArticleCard";

@@ -37,7 +37,7 @@ const NavLink = ({ children, to, onClick }) => (
 	</Box>
 );
 
-export function Header() {
+export function Header(setArticleList, setTopic, topic, setCurrentPage) {
 	const [topicList, setTopicList] = useState([]);
 	const { user, setUser } = useContext(UserContext);
 	const location = useLocation();
@@ -52,11 +52,14 @@ export function Header() {
 		getTopics()
 			.then(({ topics }) => {
 				setTopicList(topics);
+				if (topic !== "") {
+					setCurrentPage(1);
+				}
 			})
 			.catch(() => {
 				setError("There was an error fetching the topics");
 			});
-	}, []);
+	}, [topic, setCurrentPage]);
 
 	return (
 		<Box as={"header"} position="fixed" width="100%" zIndex={1000} top={0}>
@@ -161,7 +164,7 @@ export function Header() {
 					{error && <Text color="red.500">{error}</Text>}
 					{topicList.map((topic) => (
 						<NavLink
-							key={topic.topic_slug}
+							key={topic.slug}
 							to={`/${topic.slug}`}
 							onClick={onClose}
 						>

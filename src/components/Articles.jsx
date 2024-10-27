@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useSearchParams, useNavigate, useParams } from "react-router-dom";
 import { FaSort } from "react-icons/fa";
 import { CgOptions } from "react-icons/cg";
@@ -16,10 +16,37 @@ import {
 	Container,
 } from "@chakra-ui/react";
 
-export function Articles({ articleList, setArticleList }) {
+export function Articles({
+	articleList,
+	setArticleList,
+	currentPage,
+	setCurrentPage,
+}) {
+	const observer = useRef();
+	console.log(typeof setCurrentPage, "typeof");
+
+	const lastArticleRef = (node) => {
+		if (isLoading) return;
+		if (observer.current) observer.current.disconnect();
+
+		observer.current = new IntersectionObserver((entries) => {
+			if (entries[0].isIntersecting && hasMore) {
+				console.log("Loading more articles...");
+				setCurrentPage((prevPage) => prevPage + 1);
+			}
+		});
+
+		if (node) {
+			observer.current.observe(node);
+			console.log("Observer attached to node", node);
+		}
+	};
+
 	const { topic } = useParams();
 	const [isLoading, setIsLoading] = useState(true);
 	const [error, setError] = useState(null);
+	// const [currentPage, setCurrentPage] = useState(1);
+	const [hasMore, setHasMore] = useState(false);
 	const navigate = useNavigate();
 	const [searchParams, setSearchParams] = useSearchParams();
 	const sortBy = searchParams.get("sort_by") || "created_at";
@@ -27,9 +54,13 @@ export function Articles({ articleList, setArticleList }) {
 
 	useEffect(() => {
 		setIsLoading(true);
-		getArticles(topic, sortBy, order)
+		getArticles(topic, sortBy, order, currentPage)
 			.then(({ articles }) => {
-				setArticleList(articles);
+				setArticleList((prevArticles) => [
+					...prevArticles,
+					...articles,
+				]);
+				setHasMore(articles.length > 0);
 				setIsLoading(false);
 			})
 			.catch((error) => {
@@ -42,7 +73,7 @@ export function Articles({ articleList, setArticleList }) {
 				}
 				setIsLoading(false);
 			});
-	}, [topic, sortBy, order, navigate]);
+	}, [topic, sortBy, order, currentPage, navigate]);
 
 	const handleOrderToggle = () => {
 		const newOrder = order === "asc" ? "desc" : "asc";
@@ -90,23 +121,28 @@ export function Articles({ articleList, setArticleList }) {
 					spacing={8}
 					minChildWidth={"300px"}
 				>
-					{articleList.map((article) => (
-						<ArticleCard
-							key={article.article_id}
-							article={article}
-							isLoading={isLoading}
-						/>
-					))}
+					{articleList.map((article, index) => {
+						if (articleList.length === index + 1) {
+							return (
+								<ArticleCard
+									ref={lastArticleRef}
+									key={article.article_id}
+									article={article}
+									isLoading={isLoading}
+								/>
+							);
+						} else {
+							return (
+								<ArticleCard
+									key={article.article_id}
+									article={article}
+									isLoading={isLoading}
+								/>
+							);
+						}
+					})}
 				</SimpleGrid>
-				{/* <Flex flexWrap={"wrap"}>
-					{articleList.map((article) => (
-						<ArticleCard
-							key={article.article_id}
-							article={article}
-							isLoading={isLoading}
-						/>
-					))}
-				</Flex> */}
+				{isLoading && <Spinner size="xl" color="teal.500" />}
 			</Box>
 		</Container>
 	);

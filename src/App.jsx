@@ -13,6 +13,7 @@ import { ChakraProvider } from "@chakra-ui/react";
 function App() {
 	const [articleList, setArticleList] = useState([]);
 	const [topic, setTopic] = useState({});
+	const [currentPage, setCurrentPage] = useState(1);
 
 	return (
 		<ChakraProvider>
@@ -21,6 +22,7 @@ function App() {
 					setArticleList={setArticleList}
 					setTopic={setTopic}
 					topic={topic}
+					setCurrentPage={setCurrentPage}
 				/>
 
 				<>
@@ -32,6 +34,8 @@ function App() {
 									articleList={articleList}
 									setArticleList={setArticleList}
 									topic={topic}
+									currentPage={currentPage}
+									setCurrentPage={setCurrentPage}
 								/>
 							}
 						/>
@@ -42,6 +46,8 @@ function App() {
 									articleList={articleList}
 									setArticleList={setArticleList}
 									topic={topic}
+									currentPage={currentPage}
+									setCurrentPage={setCurrentPage}
 								/>
 							}
 						/>
