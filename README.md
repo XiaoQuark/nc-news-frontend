@@ -1,8 +1,39 @@
-# React + Vite
+# **NC News Frontend**
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+NC News Frontend is a React-based web app for browsing articles, topics, comments, and users. It connects to the backend API, providing a smooth user experience for interacting with content.
 
-Currently, two official plugins are available:
+## **Hosted Version**
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+The hosted version of the app can be found [here](https://xqnews.netlify.app/).
+
+## **Backend Link**
+
+The backend repository for NC News can be found here: [NC News Backend](https://github.com/XiaoQuark/nc-news-backend).
+
+## **Requirements**
+
+-   **Node.js**: v21.6.2 or higher
+
+## **Getting Started**
+
+### **Install Dependencies**
+
+Run the following command to install dependencies:
+
+```
+npm install
+```
+
+### **Run the Application**
+
+To start the development server, use:
+
+```
+npm run dev
+```
+
+The app will run at `http://localhost:5173` by default.
+
+## **Portfolio Project**
+
+This portfolio project was created as part of a Digital Skills Bootcamp in Software Engineering provided by [Northcoders](https://northcoders.com/).
