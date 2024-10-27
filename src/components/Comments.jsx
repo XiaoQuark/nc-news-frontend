@@ -1,8 +1,7 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
 import { CommentCard } from "./CommentCard";
-import { CardWrapper } from "./CardWrapper";
 import { getCommentsByArticleId } from "../../utils/api";
+import { VStack, Text, Spinner } from "@chakra-ui/react";
 
 export function Comments({ article_id, commentList, setCommentList }) {
 	const [isLoading, setIsLoading] = useState(true);
@@ -15,34 +14,46 @@ export function Comments({ article_id, commentList, setCommentList }) {
 				setCommentList(comments);
 				setIsLoading(false);
 			})
-			.catch((error) => {
+			.catch(() => {
 				setError("There was an error fetching the comments.");
 				setIsLoading(false);
 			});
-	}, [article_id]);
+	}, [article_id, setCommentList]);
 
-	if (isLoading)
-		return <p className="loading-msg">Comments are Loading...</p>;
-	if (error) return <p className="error-msg">{error}</p>;
-	if (commentList.length === 0)
+	if (isLoading) {
 		return (
-			<p className="no-comments-msg">
-				No comments yet. Be the first to comment on this article!
-			</p>
+			<Text className="loading-msg" fontSize="md">
+				Comments are Loading...
+			</Text>
 		);
+	}
+
+	if (error) {
+		return (
+			<Text className="error-msg" color="red.500">
+				{error}
+			</Text>
+		);
+	}
+
+	if (commentList.length === 0) {
+		return (
+			<Text className="no-comments-msg" fontSize="md">
+				No comments yet. Be the first to comment on this article!
+			</Text>
+		);
+	}
 
 	return (
-		<section className="content-wrapper">
-			<h3>Comments</h3>
-			<ul>
-				{commentList.map((comment) => {
-					return (
-						<CardWrapper key={comment.comment_id}>
-							<CommentCard comment={comment} />
-						</CardWrapper>
-					);
-				})}
-			</ul>
-		</section>
+		<VStack as="section" w="100%" align="stretch" spacing={4} mt={6}>
+			<Text as="h3" fontSize="xl" fontWeight="bold">
+				Comments
+			</Text>
+			<VStack as="ul" align="stretch" spacing={4}>
+				{commentList.map((comment) => (
+					<CommentCard key={comment.comment_id} comment={comment} />
+				))}
+			</VStack>
+		</VStack>
 	);
 }

@@ -1,15 +1,14 @@
-import React, { forwardRef } from "react";
+import { forwardRef } from "react";
 import { Link } from "react-router-dom";
 import {
-	Box,
-	Text,
-	Image,
 	Card,
 	CardBody,
 	CardFooter,
-	Heading,
-	Tooltip,
+	Box,
+	Text,
+	Image,
 	Flex,
+	Heading,
 	Skeleton,
 } from "@chakra-ui/react";
 
@@ -28,6 +27,7 @@ export const ArticleCard = forwardRef(({ article, isLoading }, ref) => {
 					overflow="hidden"
 					m={4}
 					height={{ base: "auto", md: "400px", lg: "450px" }} // Responsive height
+					bg="purple.50" // Added background color to match CommentCard
 				>
 					<CardBody
 						display="flex"
@@ -41,8 +41,6 @@ export const ArticleCard = forwardRef(({ article, isLoading }, ref) => {
 							<Heading as="h3" size="md" noOfLines={2} mb={4}>
 								{article.title}
 							</Heading>
-							{/* <Tooltip label={article.title} hasArrow>
-							</Tooltip> */}
 							<Box
 								display="flex"
 								justifyContent="space-between"

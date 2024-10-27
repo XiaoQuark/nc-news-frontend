@@ -23,7 +23,6 @@ export function Articles({
 	setCurrentPage,
 }) {
 	const observer = useRef();
-	console.log(typeof setCurrentPage, "typeof");
 
 	const { topic } = useParams();
 	const [isLoading, setIsLoading] = useState(true);
@@ -36,7 +35,6 @@ export function Articles({
 	const order = searchParams.get("order") || "desc";
 
 	useEffect(() => {
-		console.log("Topic changed, resetting articles");
 		setArticleList([]);
 		setCurrentPage(1);
 		setIsLoading(true);
@@ -72,7 +70,6 @@ export function Articles({
 
 		observer.current = new IntersectionObserver((entries) => {
 			if (entries[0].isIntersecting && hasMore) {
-				console.log("load more articles");
 				setCurrentPage((prevPage) => prevPage + 1);
 			}
 		});
