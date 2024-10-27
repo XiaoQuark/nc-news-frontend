@@ -25,23 +25,6 @@ export function Articles({
 	const observer = useRef();
 	console.log(typeof setCurrentPage, "typeof");
 
-	const lastArticleRef = (node) => {
-		if (isLoading) return;
-		if (observer.current) observer.current.disconnect();
-
-		observer.current = new IntersectionObserver((entries) => {
-			if (entries[0].isIntersecting && hasMore) {
-				console.log("Loading more articles...");
-				setCurrentPage((prevPage) => prevPage + 1);
-			}
-		});
-
-		if (node) {
-			observer.current.observe(node);
-			console.log("Observer attached to node", node);
-		}
-	};
-
 	const { topic } = useParams();
 	const [isLoading, setIsLoading] = useState(true);
 	const [error, setError] = useState(null);
@@ -51,6 +34,14 @@ export function Articles({
 	const [searchParams, setSearchParams] = useSearchParams();
 	const sortBy = searchParams.get("sort_by") || "created_at";
 	const order = searchParams.get("order") || "desc";
+
+	useEffect(() => {
+		console.log("Topic changed, resetting articles");
+		setArticleList([]);
+		setCurrentPage(1);
+		setIsLoading(true);
+		window.scrollTo(0, 0); // Scroll to the top of the page
+	}, [topic, setArticleList, setCurrentPage]);
 
 	useEffect(() => {
 		setIsLoading(true);
@@ -74,6 +65,22 @@ export function Articles({
 				setIsLoading(false);
 			});
 	}, [topic, sortBy, order, currentPage, navigate]);
+
+	const lastArticleRef = (node) => {
+		if (isLoading) return;
+		if (observer.current) observer.current.disconnect();
+
+		observer.current = new IntersectionObserver((entries) => {
+			if (entries[0].isIntersecting && hasMore) {
+				console.log("load more articles");
+				setCurrentPage((prevPage) => prevPage + 1);
+			}
+		});
+
+		if (node) {
+			observer.current.observe(node);
+		}
+	};
 
 	const handleOrderToggle = () => {
 		const newOrder = order === "asc" ? "desc" : "asc";
