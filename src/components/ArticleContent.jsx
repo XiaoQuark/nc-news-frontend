@@ -113,8 +113,12 @@ export function ArticleContent() {
 		: [];
 
 	return (
-		<Container as="section" maxW={"7xl"} py={{ base: 8, md: 10 }}>
-			<VStack spacing={{ base: 6, md: 8 }} alignItems="start">
+		<Container as="section" maxW={"4xl"} py={{ base: 8, md: 10 }}>
+			<VStack
+				spacing={{ base: 6, md: 8 }}
+				alignItems="start"
+				mt={{ base: "130px", md: "180px" }}
+			>
 				<Box w="100%">
 					<Flex
 						as="header"

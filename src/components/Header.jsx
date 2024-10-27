@@ -1,5 +1,5 @@
 import { useEffect, useContext, useState } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { UserContext } from "./UserContext";
 import { getTopics } from "../../utils/api";
 import {
@@ -10,13 +10,10 @@ import {
 	Stack,
 	useDisclosure,
 	Text,
-	useColorModeValue,
 	Button,
-	Center,
 	Collapse,
 } from "@chakra-ui/react";
 import { HamburgerIcon, CloseIcon } from "@chakra-ui/icons";
-import { GiWhiteBook } from "react-icons/gi";
 
 const NavLink = ({ children, to, onClick }) => (
 	<Box
@@ -37,26 +34,42 @@ const NavLink = ({ children, to, onClick }) => (
 	</Box>
 );
 
-export function Header() {
+export function Header({ setArticleList, setTopic, topic, setCurrentPage }) {
 	const [topicList, setTopicList] = useState([]);
 	const { user, setUser } = useContext(UserContext);
 	const location = useLocation();
+	const navigate = useNavigate();
 	const [error, setError] = useState(null);
 	const { isOpen, onOpen, onClose } = useDisclosure();
 
 	const handleLogout = () => {
 		setUser(null);
+		navigate("/"); // Redirect to home page after logging out
 	};
 
 	useEffect(() => {
+		// Fetch topics on mount
+		setError(null);
 		getTopics()
 			.then(({ topics }) => {
 				setTopicList(topics);
+				if (topic !== "") {
+					setCurrentPage(1);
+				}
 			})
 			.catch(() => {
 				setError("There was an error fetching the topics");
 			});
-	}, []);
+	}, [topic, setCurrentPage]);
+
+	const handleUserNavigation = () => {
+		// Navigate based on user login status
+		if (user) {
+			navigate("/user");
+		} else {
+			navigate("/login", { state: { from: location } });
+		}
+	};
 
 	return (
 		<Box as={"header"} position="fixed" width="100%" zIndex={1000} top={0}>
@@ -71,15 +84,14 @@ export function Header() {
 			>
 				{user ? (
 					<Flex direction="column" align="center">
-						<Link to="/user">
-							<Avatar
-								size="sm"
-								src={user.avatar_url}
-								alt="User avatar"
-							/>
-						</Link>
+						<Avatar
+							size="sm"
+							src={user.avatar_url}
+							alt="User avatar"
+							cursor="pointer"
+							onClick={() => navigate("/user")}
+						/>
 						<Button
-							as={Link}
 							variant="link"
 							onClick={handleLogout}
 							color="white"
@@ -92,14 +104,16 @@ export function Header() {
 					</Flex>
 				) : (
 					<Flex direction="column" align="center">
-						<Link to="/user">
-							<Avatar size="sm" src={""} alt="User avatar" />
-						</Link>
+						<Avatar
+							size="sm"
+							src={""}
+							alt="User avatar"
+							cursor="pointer"
+							onClick={handleUserNavigation}
+						/>
 						<Button
-							as={Link}
 							variant="link"
-							to="/login"
-							state={{ from: location }}
+							onClick={handleUserNavigation}
 							color="white"
 							_hover={{
 								color: "blue.300",
@@ -109,16 +123,12 @@ export function Header() {
 						</Button>
 					</Flex>
 				)}
+
 				<Link to="/" h="100%">
 					<Text
 						as="h1"
 						fontSize={{ base: "32px", sm: "48px", md: "64px" }}
 						fontWeight="bold"
-						// position="absolute"
-						// top={{ base: "70px", sm: "53px", md: "69px" }}
-						// lineHeight="initial" // Ensure the text height is correct
-						// left="50%"
-						// transform="translateX(-50%)"
 						color={"white"}
 					>
 						XQ NEWS
@@ -155,13 +165,12 @@ export function Header() {
 					bg="purple.500"
 					w="100%"
 					h="calc(100vh - 100px)"
-					// py={"150px"}
 					color="white"
 				>
 					{error && <Text color="red.500">{error}</Text>}
 					{topicList.map((topic) => (
 						<NavLink
-							key={topic.topic_slug}
+							key={topic.slug}
 							to={`/${topic.slug}`}
 							onClick={onClose}
 						>

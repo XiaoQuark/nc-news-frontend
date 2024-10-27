@@ -2,10 +2,10 @@ import { useContext, useEffect, useState } from "react";
 import { UserContext } from "./UserContext";
 import { useLocation, useNavigate } from "react-router-dom";
 import { PageTitleWrapper } from "./PageTitleWrapper";
-import { CardWrapper } from "./CardWrapper";
-import "./styling/UserCard.css";
 import ContentWrapper from "./ContentWrapper";
 import { getUsers } from "../../utils/api";
+import { Spinner, Text, SimpleGrid, Container } from "@chakra-ui/react";
+import { UserCard } from "./UserCard";
 
 export function LoginPage() {
 	const [userList, setUserList] = useState([]);
@@ -17,12 +17,18 @@ export function LoginPage() {
 	const from = location.state?.from?.pathname || "/";
 
 	useEffect(() => {
+		setIsLoading(true);
+
 		getUsers()
 			.then(({ users }) => {
 				setUserList(users);
+				setError(null);
 			})
-			.catch((error) => {
+			.catch((err) => {
 				setError("There was an error fetching the users!");
+			})
+			.finally(() => {
+				setIsLoading(false);
 			});
 	}, []);
 
@@ -32,31 +38,50 @@ export function LoginPage() {
 	};
 
 	return (
-		<section>
-			{error && <p className="error-msg">{error}</p>}
+		<Container as="section" maxW={"4xl"} py={{ base: 8, md: 10 }}>
 			<PageTitleWrapper>
-				<h2>Select your account</h2>
+				<Text
+					as="h2"
+					fontSize="2xl"
+					fontWeight="bold"
+					textAlign="center"
+				>
+					Select your account
+				</Text>
 			</PageTitleWrapper>
-			<ContentWrapper>
-				<ul className="list-wrapper">
-					{userList.map((user) => (
-						<CardWrapper key={user.username}>
-							<UserCard user={user} onLogin={handleLogin} />
-						</CardWrapper>
-					))}
-				</ul>
-			</ContentWrapper>
-		</section>
-	);
-}
 
-function UserCard({ user, onLogin }) {
-	return (
-		<div onClick={() => onLogin(user)}>
-			<li className="user-wrapper">
-				<img className="avatar" src={user.avatar_url} alt="" />
-				<p>{user.username}</p>
-			</li>
-		</div>
+			{isLoading && (
+				<Container display="flex" justifyContent="center" mt={8}>
+					<Spinner size="xl" color="teal.500" />
+				</Container>
+			)}
+
+			{error && (
+				<Text color="red.500" fontSize="lg" textAlign="center" mt={4}>
+					{error}
+				</Text>
+			)}
+
+			{!isLoading && !error && (
+				<ContentWrapper>
+					<SimpleGrid
+						columns={{ base: 1, sm: 2, md: 3 }}
+						spacing={8}
+						mt={8}
+						mx="auto"
+						minChildWidth={"200px"}
+						justifyItems="center"
+					>
+						{userList.map((user) => (
+							<UserCard
+								key={user.username}
+								user={user}
+								onLogin={handleLogin}
+							/>
+						))}
+					</SimpleGrid>
+				</ContentWrapper>
+			)}
+		</Container>
 	);
 }
